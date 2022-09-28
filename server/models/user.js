@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         unique: { args: true, msg: "The Email is already taken" },
         validate: {
-          isEmai: {
+          isEmail: {
             args: true,
             msg: "Please Enter the valid Email address",
           },
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         validate: {
           isNotShort: (value) => {
-            if (value.length > 8) {
+            if (value.length < 8) {
               throw new Error("Password must be greater then 8 digits");
             }
           },

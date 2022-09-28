@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const Book = sequelize.difine(
+  const Book = sequelize.define(
     "Book",
     {
       title: {
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Book.associate = (models) => {
-    Book.belongsto(models.User, {
+    Book.belongsTo(models.User, {
       foreignKey: "userId",
       onDelete: "CASCADE",
     });
