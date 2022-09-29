@@ -36,33 +36,28 @@ const createUser = async (req, res) => {
   }
 };
 const getAllUsers = (req, res) => {
-  const action = User.findAll().then((data) => {
-    return res
-      .json({
+  const action = User.findAll()
+    .then((data) => {
+      return res.json({
         success: true,
         message: data?.message,
         data,
-      })
-      .catch((err) => {
-        return res.json({
-          success: false,
-          message: err.message,
-        });
       });
-  });
+    })
+    .catch((err) => {
+      throw new Error(err?.message);
+    });
   return action;
 };
 const getSingleUser = async (req, res) => {
   const { id } = req.params;
-  const action = await User.findAll({ where: { id: id } });
-  // console.log(action);
+
+  const action = await User.findOne({ where: { id: id } });
+  console.log(action);
   try {
-    if (action.length === 0) {
-      return res.json({
-        success: false,
-        message: "User not found",
-        // action,
-      });
+    if (!action) {
+      res.status(404);
+      throw new Error("Not found");
     }
     return res.json({
       success: true,
@@ -70,21 +65,16 @@ const getSingleUser = async (req, res) => {
       action,
     });
   } catch (err) {
-    return res.json({
-      success: false,
-      message: err?.message,
-    });
+    throw new Error(err?.message);
   }
-  return action;
 };
 const deleteSingleUser = async (req, res) => {
   const { id } = req.params;
   try {
     const action = await User.destroy({ where: { id } });
     if (!action) {
-      return res.json({
-        message: "Id not found",
-      });
+      res.status(400);
+      throw new Error("Id not Found");
     }
     return res
       .json({
@@ -93,11 +83,7 @@ const deleteSingleUser = async (req, res) => {
       })
       .status(200);
   } catch (err) {
-    res
-      .json({
-        message: err.message,
-      })
-      .status(500);
+    throw new Error(err?.message);
   }
 };
 

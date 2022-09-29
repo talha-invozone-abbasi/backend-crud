@@ -5,11 +5,12 @@ const {
   getSingleUser,
   deleteSingleUser,
 } = require("../controllers/user.contollers");
+const auth = require("../middlewares/auth");
 
 const routes = express.Router();
 
 routes.post("/", createUser);
-routes.get("/", getAllUsers);
-routes.get("/:id", getSingleUser);
-routes.delete("/:id", deleteSingleUser);
+routes.get("/", [auth], getAllUsers);
+routes.get("/:id", [auth], getSingleUser);
+routes.delete("/:id", [auth], deleteSingleUser);
 module.exports = routes;

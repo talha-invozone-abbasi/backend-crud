@@ -3,9 +3,15 @@ const bodyParser = require("body-parser");
 const logger = require("morgan");
 const http = require("http");
 const PORT = 4000;
+// routes
 const booksRoutes = require("./server/routes/books.routes");
 const userRoutes = require("./server/routes/user.routes");
 const authRoutes = require("./server/routes/auth.routes");
+// error handler
+const {
+  notFound,
+  errorHandler,
+} = require("./server/middlewares/errorHandling");
 
 // express setup
 const app = express();
@@ -28,6 +34,9 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/book", booksRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
 
 server.listen(PORT, (err) => {
   if (err) throw err;

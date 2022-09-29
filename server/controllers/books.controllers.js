@@ -26,34 +26,29 @@ const createBook = (req, res) => {
 };
 
 const getBooks = (req, res) => {
-  const action = Book.findAll().then((data) => {
-    return res
-      .json({
+  const action = Book.findAll()
+    .then((data) => {
+      return res.json({
         success: true,
         message: data?.message,
         data,
-      })
-      .catch((err) => {
-        return res.json({
-          success: false,
-          message: err.message,
-        });
       });
-  });
+    })
+    .catch((err) => {
+      throw new Error(err?.message);
+    });
+
   return action;
 };
 
 const getSingleBook = async (req, res) => {
-  const { id } = req.params;
-  const action = await Book.findAll({ where: { id: id } });
-  // console.log(action);
   try {
-    if (action.length === 0) {
-      return res.json({
-        success: false,
-        message: "Book not found",
-        // action,
-      });
+    const { id } = req.params;
+    const action = await Book.findOne({ where: { id: id } });
+
+    if (!action) {
+      res.status(404);
+      throw new Error("Book not found");
     }
     return res.json({
       success: true,
@@ -61,21 +56,17 @@ const getSingleBook = async (req, res) => {
       action,
     });
   } catch (err) {
-    return res.json({
-      success: false,
-      message: err?.message,
-    });
+    res.status(500);
+    throw new Error(err?.message);
   }
-  return action;
 };
 const deleteSingleBook = async (req, res) => {
   const { id } = req.params;
   try {
     const action = await Book.destroy({ where: { id } });
     if (!action) {
-      return res.json({
-        message: "Book not found",
-      });
+      res.status(404);
+      throw new Error("Book not found");
     }
     return res
       .json({
@@ -84,11 +75,8 @@ const deleteSingleBook = async (req, res) => {
       })
       .status(200);
   } catch (err) {
-    res
-      .json({
-        message: err.message,
-      })
-      .status(500);
+    res.status(500);
+    throw new Error(err?.message);
   }
 };
 
