@@ -1,4 +1,5 @@
 const Book = require("../models/").Book;
+const asyncHandler = require("express-async-handler");
 
 const createBook = (req, res) => {
   const { title, author, description, quantity } = req.body;
@@ -41,44 +42,35 @@ const getBooks = (req, res) => {
   return action;
 };
 
-const getSingleBook = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const action = await Book.findOne({ where: { id: id } });
-
-    if (!action) {
-      res.status(404);
-      throw new Error("Book not found");
-    }
-    return res.json({
-      success: true,
-      message: action?.message,
-      action,
-    });
-  } catch (err) {
-    res.status(500);
-    throw new Error(err?.message);
-  }
-};
-const deleteSingleBook = async (req, res) => {
+const getSingleBook = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  try {
-    const action = await Book.destroy({ where: { id } });
-    if (!action) {
-      res.status(404);
-      throw new Error("Book not found");
-    }
-    return res
-      .json({
-        message: "Deleted Successfully",
-        action,
-      })
-      .status(200);
-  } catch (err) {
-    res.status(500);
-    throw new Error(err?.message);
+  const action = await Book.findOne({ where: { id: id } });
+
+  if (!action) {
+    res.status(404);
+    throw new Error("Book not found");
   }
-};
+  return res.json({
+    success: true,
+    message: action?.message,
+    action,
+  });
+});
+const deleteSingleBook = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const action = await Book.destroy({ where: { id } });
+  if (!action) {
+    res.status(404);
+    throw new Error("Book not found");
+  }
+  return res
+    .json({
+      message: "Deleted Successfully",
+      action,
+    })
+    .status(200);
+});
 
 module.exports = {
   createBook,

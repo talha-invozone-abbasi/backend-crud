@@ -1,4 +1,5 @@
 const User = require("../models/").User;
+const asyncHandler = require("express-async-handler");
 
 const createUser = async (req, res) => {
   const { firstName, email, username, password } = req.body;
@@ -49,43 +50,37 @@ const getAllUsers = (req, res) => {
     });
   return action;
 };
-const getSingleUser = async (req, res) => {
+const getSingleUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const action = await User.findOne({ where: { id: id } });
-  console.log(action);
-  try {
-    if (!action) {
-      res.status(404);
-      throw new Error("Not found");
-    }
-    return res.json({
-      success: true,
-      message: action?.message,
-      action,
-    });
-  } catch (err) {
-    throw new Error(err?.message);
+
+  if (!action) {
+    res.status(404);
+    throw new Error("Not found");
   }
-};
-const deleteSingleUser = async (req, res) => {
+  return res.json({
+    success: true,
+    message: action?.message,
+    action,
+  });
+});
+
+const deleteSingleUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  try {
-    const action = await User.destroy({ where: { id } });
-    if (!action) {
-      res.status(400);
-      throw new Error("Id not Found");
-    }
-    return res
-      .json({
-        message: "Deleted Successfully",
-        action,
-      })
-      .status(200);
-  } catch (err) {
-    throw new Error(err?.message);
+
+  const action = await User.destroy({ where: { id } });
+  if (!action) {
+    res.status(400);
+    throw new Error("Id not Found");
   }
-};
+  return res
+    .json({
+      message: "Deleted Successfully",
+      action,
+    })
+    .status(200);
+});
 
 module.exports = {
   createUser,
