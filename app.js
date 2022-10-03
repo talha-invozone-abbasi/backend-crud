@@ -12,6 +12,9 @@ const {
   notFound,
   errorHandler,
 } = require("./server/middlewares/errorHandling");
+// swaggar implementation
+const swaggarDocs = require("swagger-ui-express");
+const { swagerDocument } = require("./server/helpers/docmentations");
 
 // express setup
 const app = express();
@@ -34,6 +37,12 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/book", booksRoutes);
 app.use("/api/auth", authRoutes);
+
+// swagger routes
+
+app.use("/swagger-docs", swaggarDocs.serve);
+// swagger setup
+app.use("/swagger-docs", swaggarDocs.setup(swagerDocument));
 
 app.use(notFound);
 app.use(errorHandler);

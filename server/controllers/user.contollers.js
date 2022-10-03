@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const createUser = async (req, res) => {
   const { firstName, email, username, password } = req.body;
 
-  const findAll = await User.findAll({ where: { email: email } });
+  const findAll = await User.findOne({ where: { email: email } });
   if (!findAll) {
     const action = User.create({
       firstName,
