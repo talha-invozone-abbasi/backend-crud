@@ -16,6 +16,10 @@ const {
 const swaggarDocs = require("swagger-ui-express");
 const { swagerDocument } = require("./server/helpers/docmentations");
 
+// db-trigers
+
+// const dbTriger = require("./server/config/triggers");
+
 // express setup
 const app = express();
 // create server
@@ -23,6 +27,9 @@ const server = http.createServer(app);
 
 // logger for console
 app.use(logger("dev"));
+
+// db trigners
+// dbTriger();
 
 // bodyparser for req body
 app.use(bodyParser.json());

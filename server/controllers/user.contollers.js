@@ -82,9 +82,26 @@ const deleteSingleUser = asyncHandler(async (req, res) => {
     .status(200);
 });
 
+const updateSingleUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  let data = {
+    firstName: req?.body?.firstName,
+    username: req?.body?.username,
+  };
+  let action = await User.findOne({ where: { id } });
+  if (action) {
+    action.set(data);
+    await action.save();
+    return res.json(action);
+  } else {
+    console.log("Not found");
+  }
+});
+
 module.exports = {
   createUser,
   getAllUsers,
   getSingleUser,
+  updateSingleUser,
   deleteSingleUser,
 };

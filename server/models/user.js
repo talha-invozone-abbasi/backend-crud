@@ -46,7 +46,22 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    {}
+    {
+      hooks: {
+        beforeUpdate: (user, options) => {
+          console.log(user);
+        },
+        afterUpdate: (user, options) => {
+          console.log(user, "After");
+        },
+        beforeCreate: (user, options) => {
+          console.log(user);
+        },
+        afterCreate: (user, options) => {
+          console.log(user, "After create");
+        },
+      },
+    }
   );
   User.associate = (model) => {
     User.hasMany(model.Book, {
