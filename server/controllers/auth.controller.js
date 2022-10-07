@@ -1,10 +1,11 @@
 const User = require("../models/").User;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
+const { validationResult } = require("express-validator");
 
-const SignupUser = async (req, res) => {
+const SignupUser = asyncHandler(async (req, res) => {
   const { firstName, email, username, password } = req.body;
-
   const findAll = await User.findOne({ where: { email: email } });
   if (!findAll) {
     const action = User.create({
@@ -12,28 +13,28 @@ const SignupUser = async (req, res) => {
       email,
       username,
       password: await bcrypt.hash(password, 10),
-    })
-      .then(async (user) => {
-        let token = jwt.sign({ id: user.id }, "secret", {
+    });
+    if (action) {
+      try {
+        let token = jwt.sign({ id: action.id }, process.env.JWT_SECRET, {
           expiresIn: 36000 * 3600,
         });
         res
           .json({
             success: true,
             message: action.message,
-            data: user,
+            data: action,
             token,
           })
           .status(200);
-      })
-
-      .catch((err) =>
+      } catch (err) {
         res.json({
           // success: true,
           message: err.message,
           // data: action,
-        })
-      );
+        });
+      }
+    }
   } else {
     res.json({
       // success: true,
@@ -41,16 +42,20 @@ const SignupUser = async (req, res) => {
       // data: action,
     });
   }
-};
+});
 
 const login = async (req, res) => {
+  const errors = validationResult(req).formatWith((msg) => msg);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { email, password } = req.body;
   try {
     const action = await User.findOne({ where: { email: email } });
     if (action) {
       let comparePass = await bcrypt?.compare(password, action.password);
       if (comparePass) {
-        let token = jwt.sign({ id: action.id }, "secret", {
+        let token = jwt.sign({ id: action.id }, process.env.JWT_SECRET, {
           expiresIn: 3600 * 3600,
         });
         return res.status(200).json({

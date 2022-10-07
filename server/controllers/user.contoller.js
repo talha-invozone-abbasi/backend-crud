@@ -1,7 +1,12 @@
-const User = require("../models/").User;
+const User = require("../models").User;
 const asyncHandler = require("express-async-handler");
+const { validationResult } = require("express-validator");
 
-const createUser = async (req, res) => {
+const createUser = asyncHandler(async (req, res) => {
+  const errors = validationResult(req).formatWith((msg) => msg);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { firstName, email, username, password } = req.body;
 
   const findAll = await User.findOne({ where: { email: email } });
@@ -11,23 +16,24 @@ const createUser = async (req, res) => {
       email,
       username,
       password,
-    })
-      .then((user) => {
+    });
+    if (action) {
+      try {
         res
           .json({
             success: true,
             message: action.message,
-            data: user,
+            data: action,
           })
           .status(200);
-      })
-      .catch((err) =>
+      } catch (err) {
         res.json({
           // success: true,
           message: err.message,
           // data: action,
-        })
-      );
+        });
+      }
+    }
   } else {
     res.json({
       // success: true,
@@ -35,21 +41,22 @@ const createUser = async (req, res) => {
       // data: action,
     });
   }
-};
-const getAllUsers = (req, res) => {
-  const action = User.findAll()
-    .then((data) => {
+});
+const getAllUsers = asyncHandler(async (req, res) => {
+  const action = await User.findAll();
+  if (action) {
+    try {
       return res.json({
         success: true,
         message: data?.message,
         data,
       });
-    })
-    .catch((err) => {
+    } catch (err) {
       throw new Error(err?.message);
-    });
+    }
+  }
   return action;
-};
+});
 const getSingleUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -83,6 +90,10 @@ const deleteSingleUser = asyncHandler(async (req, res) => {
 });
 
 const updateSingleUser = asyncHandler(async (req, res) => {
+  const errors = validationResult(req).formatWith((msg) => msg);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { id } = req.params;
   let data = {
     firstName: req?.body?.firstName,

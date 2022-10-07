@@ -49,16 +49,16 @@ module.exports = (sequelize, DataTypes) => {
     {
       hooks: {
         beforeUpdate: (user, options) => {
-          console.log(user);
+          // console.log(user);
         },
         afterUpdate: (user, options) => {
-          console.log(user, "After");
+          // console.log(user, "After");
         },
         beforeCreate: (user, options) => {
-          console.log(user);
+          // console.log(user);
         },
         afterCreate: (user, options) => {
-          console.log(user, "After create");
+          // console.log(user, "After create");
         },
       },
     }

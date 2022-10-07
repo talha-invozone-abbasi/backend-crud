@@ -4,7 +4,7 @@ const {
   getBooks,
   getSingleBook,
   deleteSingleBook,
-} = require("../controllers/books.controllers");
+} = require("../controllers/books.controller");
 const auth = require("../middlewares/auth");
 
 const routes = express.Router();

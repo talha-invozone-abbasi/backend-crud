@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
       message: "Token mising",
     });
   }
-  jwt.verify(token, "secret", (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return res.json({
         message: "Token not Valid",

@@ -1,7 +1,7 @@
 const Book = require("../models/").Book;
 const asyncHandler = require("express-async-handler");
 
-const createBook = (req, res) => {
+const createBook = asyncHandler((req, res) => {
   const { title, author, description, quantity } = req.body;
   const { userId } = req.params;
   const action = Book.create({
@@ -10,37 +10,38 @@ const createBook = (req, res) => {
     description,
     quantity,
     userId,
-  }).then((response) => {
-    return res
-      .status(201)
-      .json({
-        success: true,
-        data: response,
-      })
-      .catch((error) => {
-        return res.status(500).json({
-          success: false,
-          data: error?.message,
-        });
-      });
   });
-};
+  if (action) {
+    try {
+      return res.status(201).json({
+        success: true,
+        data: action,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        data: error?.message,
+      });
+    }
+  }
+});
 
-const getBooks = (req, res) => {
-  const action = Book.findAll()
-    .then((data) => {
+const getBooks = asyncHandler((req, res) => {
+  const action = Book.findAll();
+  if (action) {
+    try {
       return res.json({
         success: true,
         message: data?.message,
         data,
       });
-    })
-    .catch((err) => {
+    } catch (err) {
       throw new Error(err?.message);
-    });
+    }
+  }
 
   return action;
-};
+});
 
 const getSingleBook = asyncHandler(async (req, res) => {
   const { id } = req.params;

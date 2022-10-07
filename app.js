@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const logger = require("morgan");
 const http = require("http");
 const PORT = 4000;
+// env config
+require("dotenv").config();
+
 // routes
 const booksRoutes = require("./server/routes/books.routes");
 const userRoutes = require("./server/routes/user.routes");

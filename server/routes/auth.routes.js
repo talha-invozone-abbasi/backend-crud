@@ -1,9 +1,13 @@
 const express = require("express");
-const { SignupUser, login } = require("../controllers/auth.controllers");
-const { createBook } = require("../controllers/books.controllers");
+const { SignupUser, login } = require("../controllers/auth.controller");
+const { createBook } = require("../controllers/books.controller");
+const {
+  loginVerification,
+  CreateUserValidation,
+} = require("../middlewares/validations");
 
 const routes = express.Router();
 
-routes.post("/signup", SignupUser);
-routes.post("/login", login);
+routes.post("/signup", [...CreateUserValidation], SignupUser);
+routes.post("/login", [...loginVerification], login);
 module.exports = routes;
