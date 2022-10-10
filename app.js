@@ -18,8 +18,28 @@ const {
 // swaggar implementation
 const swaggarDocs = require("swagger-ui-express");
 const { swagerDocument } = require("./server/helpers/docmentations");
+const EventEmitter = require("events");
 
 // db-trigers
+
+const event = new EventEmitter();
+
+event.on("Hello", () => {
+  console.log("hello");
+});
+
+event.emit("Hello");
+
+event.on("portName", () => {
+  console.log(`this is the PortName ${PORT}`);
+});
+
+event.emit("portName");
+
+event.on("add", (a, b) => {
+  console.log(a + b);
+});
+event.emit("add", 1, 2);
 
 // const dbTriger = require("./server/config/triggers");
 

@@ -2,7 +2,7 @@ const { body } = require("express-validator");
 
 const CreateUserValidation = [
   body("firstName").not().isEmpty(),
-  body("email").isEmail().isEmpty(),
+  body("email").isEmail(),
   body("password").not().isEmpty(),
   body("username").not().isEmpty(),
 ];

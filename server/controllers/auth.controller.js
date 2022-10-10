@@ -8,11 +8,11 @@ const SignupUser = asyncHandler(async (req, res) => {
   const { firstName, email, username, password } = req.body;
   const findAll = await User.findOne({ where: { email: email } });
   if (!findAll) {
-    const action = User.create({
+    const action = await User.create({
       firstName,
       email,
       username,
-      password: await bcrypt.hash(password, 10),
+      password,
     });
     if (action) {
       try {

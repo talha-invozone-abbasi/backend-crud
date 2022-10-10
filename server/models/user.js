@@ -1,4 +1,5 @@
 const sequelize = require("sequelize");
+const bcrypt = require("bcryptjs");
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
@@ -49,20 +50,33 @@ module.exports = (sequelize, DataTypes) => {
     {
       hooks: {
         beforeUpdate: (user, options) => {
-          // console.log(user);
+          user.username = " before Update";
         },
-        afterUpdate: (user, options) => {
-          // console.log(user, "After");
+        afterUpdate: async (user, options) => {
+          user.username += " after Update";
         },
-        beforeCreate: (user, options) => {
-          // console.log(user);
+        beforeCreate: async (user, options) => {
+          let password = await bcrypt.genSalt(10);
+          let hashpassword = await bcrypt.hash(user.password, password);
+          user.password = hashpassword;
         },
-        afterCreate: (user, options) => {
+        afterCreate: async (user, options) => {
+          // await user.save();
           // console.log(user, "After create");
         },
       },
     }
   );
+  User.addHook("beforeValidate", "beforeVal", async (user, options) => {
+    if (user.firstName.length < 5) {
+      return Promise.reject(new Error("First name must be at least 6"));
+    }
+  });
+
+  User.addHook("afterValidate", "afterVal", async (user, options) => {
+    // User.removeHook("beforeValidate", "beforeVal");
+    // console.log("Hook Removed");
+  });
   User.associate = (model) => {
     User.hasMany(model.Book, {
       foreignKey: "userId",
