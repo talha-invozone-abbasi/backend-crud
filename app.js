@@ -5,6 +5,8 @@ const http = require("http");
 const PORT = 4000;
 // env config
 require("dotenv").config();
+// cron job
+const cron = require("node-cron");
 
 // routes
 const booksRoutes = require("./server/routes/books.routes");
@@ -20,28 +22,43 @@ const swaggarDocs = require("swagger-ui-express");
 const { swagerDocument } = require("./server/helpers/docmentations");
 const EventEmitter = require("events");
 
+// import cron job
+const cronJob = require("./server/mail/nodemailer");
+
+cronJob;
+
 // db-trigers
 
-const event = new EventEmitter();
+// const event = new EventEmitter();
 
-event.on("Hello", () => {
-  console.log("hello");
-});
+// event.on("Hello", () => {
+//   console.log("hello");
+// });
 
-event.emit("Hello");
+// event.emit("Hello");
 
-event.on("portName", () => {
-  console.log(`this is the PortName ${PORT}`);
-});
+// event.on("portName", () => {
+//   console.log(`this is the PortName ${PORT}`);
+// });
 
-event.emit("portName");
+// event.emit("portName");
 
-event.on("add", (a, b) => {
-  console.log(a + b);
-});
-event.emit("add", 1, 2);
+// event.on("add", (a, b) => {
+//   console.log(a + b);
+// });
+// event.emit("add", 1, 2);
 
 // const dbTriger = require("./server/config/triggers");
+// cron.schedule("* * * * * *", () => {
+//   console.log("running a task every seconds");
+// });
+// cron.schedule("4 * * * *", () => {
+//   console.log("running a task on 4 minutes");
+// });
+
+// cron.schedule("10-15 * * * * *", () => {
+//   console.log("range");
+// });
 
 // express setup
 const app = express();

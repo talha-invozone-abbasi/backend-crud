@@ -74,8 +74,8 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.addHook("afterValidate", "afterVal", async (user, options) => {
-    // User.removeHook("beforeValidate", "beforeVal");
-    // console.log("Hook Removed");
+    User.removeHook("beforeValidate", "beforeVal");
+    console.log("Hook Removed");
   });
   User.associate = (model) => {
     User.hasMany(model.Book, {
